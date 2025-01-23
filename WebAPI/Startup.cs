@@ -12,7 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Persistencia;
 using Microsoft.EntityFrameworkCore;
-
+using MediatR;
+using Aplicacion.Cursos;
 
 
 namespace WebAPI
@@ -33,6 +34,7 @@ namespace WebAPI
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddMediatR(typeof(Consulta.Manejador).Assembly);
             services.AddControllers();
         }
 
