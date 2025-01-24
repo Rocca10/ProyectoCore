@@ -6,18 +6,31 @@ using MediatR;
 using Persistencia;
 using System.Threading; // Para CancellationToken
 using Dominio;
+using System.ComponentModel.DataAnnotations;
+using FluentValidation.AspNetCore;
+using FluentValidation;
 
 namespace Aplicacion.Cursos
 {
     public class Nuevo
     {
         public class Ejecuta : IRequest {
+        // [Required(ErrorMessage="Por favor ingrese el titulo")] //Lo que hace aca es que obligatoriamente tenes que poner el titulo cuando haces un POST en POSTMAN. Asi no cargas solo un dato.
         public string Titulo {get;set;}
         public string Descripcion {get;set;}
-        public DateTime FechaPublicacion {get;set;}
+        public DateTime? FechaPublicacion {get;set;}
         }
 
-        public class Manejador : IRequestHandler<Ejecuta>{
+        public class EjecutaValidacion : AbstractValidator<Ejecuta>{    //Clase que ejecuta la validacion.
+            public EjecutaValidacion(){
+                RuleFor(x => x.Titulo).NotEmpty();
+                RuleFor(x => x.Descripcion).NotEmpty();
+                RuleFor(x => x.FechaPublicacion).NotEmpty();
+            }
+        }
+
+
+        public class Manejador : IRequestHandler<Ejecuta>{      //Clase que se encarga de Manejar los cursos nuevos.
 
             private readonly CursosOnlineContext _context;
             public Manejador(CursosOnlineContext context){

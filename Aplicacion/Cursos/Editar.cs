@@ -1,10 +1,14 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Persistencia;
 using System.Threading; // Para CancellationToken
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using Aplicacion.ManejadorError;
 
 namespace Aplicacion.Cursos
 {
@@ -16,6 +20,14 @@ namespace Aplicacion.Cursos
             public string Titulo { get; set; }
             public string Descripcion { get; set; }
             public DateTime? FechaPublicacion { get; set; } //El signo de interrogacion es para permitir entrada de datos nulos. DateTime no permite datos nulos por eso se pone el signo de interrogacion.
+        }
+
+            public class EjecutaValidacion : AbstractValidator<Ejecuta>{    //Clase que ejecuta la validacion.
+            public EjecutaValidacion(){
+                RuleFor(x => x.Titulo).NotEmpty();
+                RuleFor(x => x.Descripcion).NotEmpty();
+                RuleFor(x => x.FechaPublicacion).NotEmpty();
+            }
         }
 
         public class Manejador : IRequestHandler<Ejecuta>
@@ -30,8 +42,8 @@ namespace Aplicacion.Cursos
             {
                 var curso = await _context.Curso.FindAsync(request.CursoId);
                 if (curso == null)
-                {
-                    throw new Exception("El curso no existe");
+                if(curso ==null ){
+                    throw new ManejadorExcepcion(HttpStatusCode.NotFound, new {mensaje = "No se encontró el Curso"});
                 }
 
                 curso.Titulo = request.Titulo ?? curso.Titulo;

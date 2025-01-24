@@ -1,10 +1,12 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Persistencia;
 using System.Threading; // Para CancellationToken
+using Aplicacion.ManejadorError;
 
 namespace Aplicacion.Cursos
 {
@@ -25,7 +27,8 @@ namespace Aplicacion.Cursos
             {
                 var curso = await _context.Curso.FindAsync(request.Id);
                 if(curso ==null ){
-                    throw new Exception("No se encotró el curso");
+                    //throw new Exception("No se encotró el curso"); Error generico
+                    throw new ManejadorExcepcion(HttpStatusCode.NotFound, new {mensaje = "No se encontró el Curso"});
                 }
                 _context.Remove(curso);
 

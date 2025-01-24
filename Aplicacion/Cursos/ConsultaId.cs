@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using MediatR;
 using Dominio;
 using Persistencia;
 using System.Threading;
+using Aplicacion.ManejadorError;
 
 namespace Aplicacion.Cursos
 {
@@ -26,6 +28,11 @@ namespace Aplicacion.Cursos
         public async Task<Curso> Handle(CursoUnico request, CancellationToken cancellationToken)
         {
             var curso = await _context.Curso.FindAsync(request.Id);
+                if(curso ==null ){
+                    //throw new Exception("No se encotró el curso"); Error generico
+                    throw new ManejadorExcepcion(HttpStatusCode.NotFound, new {mensaje = "No se encontró el Curso"});
+                }
+
             return curso;
         }
 
