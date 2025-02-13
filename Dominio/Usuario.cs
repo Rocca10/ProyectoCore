@@ -9,5 +9,6 @@ namespace Dominio
     public class Usuario : IdentityUser
     {
         public string NombreCompleto{get;set;}
+        //El UserName y el Email no hace falta ponerlo ya que lo heredan desde IdentityUser.
     }
 }
