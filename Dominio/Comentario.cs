@@ -7,7 +7,7 @@ namespace Dominio
 {
     public class Comentario
     {
-        public int ComentarioId {get;set;}
+        public Guid ComentarioId {get;set;} //En C# Guid se usa para cargar las claves primarias
         public string Alumno {get;set;}
         public int Puntaje {get;set;}
         public string ComentarioTexto {get;set;}
